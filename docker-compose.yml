@@ -1,0 +1,57 @@
+version: '3.3'
+
+services:
+   db:
+     image: mysql:5.7
+     ports:
+       - 3306:3306
+     networks:
+      - overlay
+     volumes:
+       - db_data:/var/lib/mysql
+     container_name: wordpressdb
+     restart: always
+     environment:
+       MYSQL_ROOT_PASSWORD: somewordpress
+       MYSQL_DATABASE: wordpress
+       MYSQL_USER: wordpress
+       MYSQL_PASSWORD: wordpress
+
+   wordpress:
+     depends_on:
+       - db
+     image: zubeldia/wordpress-xdebug:5.1.1-php7.1-apache
+     ports:
+       - 80:80
+     networks:
+      - overlay
+     volumes:
+       - ./html:/var/www/html
+     container_name: wordpressweb
+     restart: always
+     environment:
+       WORDPRESS_DB_HOST: db:3306
+       WORDPRESS_DB_USER: wordpress
+       WORDPRESS_DB_PASSWORD: wordpress
+       WORDPRESS_DB_NAME: wordpress
+   phpmyadmin:
+     image: phpmyadmin/phpmyadmin
+     depends_on:
+       - db
+     ports:
+       - 8181:80
+     networks:
+      - overlay
+     container_name: wordpress_phpmyadmin
+     restart: always
+     environment:
+       PMA_HOST: db
+       MYSQL_USER: wordpress
+       MYSQL_PASSWORD: wordpress
+       MYSQL_ROOT_PASSWORD: somewordpress
+networks:
+  overlay:
+    # Use a custom driver
+    driver: bridge
+volumes:
+    db_data: {}
