@@ -1,4 +1,4 @@
-# docker-php-with-mysqli
+# wordpress-xdebug
 **PREREQUISITES**
 
 To have docker installed and toolbox (docker-compose, ...)
